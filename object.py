@@ -1,5 +1,6 @@
-from math import dist
+from math import dist, sqrt
 import pygame
+import colorsys
 
 class Object:
 
@@ -14,7 +15,7 @@ class Object:
         self.unmovable = unmovable
 
         if auto_scale:
-            self.rect.w = self.rect.h = mass / 2 # maybe sqrt or something
+            self.rect.w = self.rect.h = sqrt(mass*10)
 
     def move(self, objects):
         for i in range(2):
@@ -30,7 +31,8 @@ class Object:
                     m1, m2 = self.mass, obj.mass
                     r = m2 / m1
                     # v1, v2 = self.vel[i], obj.vel[i]
-                    v1, v2 = self.new_vel[i], obj.vel[i]
+                    # v1, v2 = self.new_vel[i], obj.vel[i]
+                    v1, v2 = self.vel[i], obj.vel[i]
 
 
                     if m1 == -1:
@@ -82,6 +84,8 @@ class Object:
 
     @property
     def energy(self):
+        if self.mass == -1:
+            return self.vel[0] ** 2
         return self.mass * self.vel[0] ** 2
 
     def uncollide(self, objects):
@@ -153,11 +157,20 @@ class Object:
 
     def blit(self, surf, font):
 
+        color = colorsys.hsv_to_rgb(min(self.energy * 0.0001, 0.4),
+                                    min(self.energy * 0.005, 1),
+                                    min(self.energy*0.0005 + 0.4, 1))
+        color = (color[0]*255, color[1]*255, color[2]*225)       # print(color)
         # self.blit_text(surf, font, f'{round(self.vel[0], 4)}', pos=(self.rect[0], self.rect[1] - 8))
+
         text = f'''E: {round(self.energy)}
 {(round(self.vel[0]), round(self.vel[1]))}'''
-        self.blit_text(surf, font, text, pos=(self.rect[0], self.rect[1] - 20))
-        pygame.draw.rect(surf, self.color, self.rect)
+
+        self.blit_text(surf, font, text, pos=(self.rect[0], self.rect[1] - 20),
+                       color=color)
+        # color = (min(self.energy * 0.05, 255), min(self.energy * 2, 255), 255)
+        # color = self.color
+        pygame.draw.rect(surf, color, self.rect)
 
     def __repr__(self):
         if self.rect.w == 20:

@@ -16,18 +16,32 @@ FONTS = {
 }
 
 
-WALL_THICKNESS = 50
+WALL_THICKNESS = 100_000
 WALL_COLORS = (100, 0, 0)
 OFFSET = 10
 objects = [
-    Object(pygame.FRect(400, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
-    Object(pygame.FRect(200, 200, 50, 50), 1000, (0, 240, 0), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(200, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(250, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(300, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(350, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(400, 200, 20, 20), 10, (0, 240, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(450, 200, 50, 50), 1000, (0, 0, 240), [0, 0], auto_scale=False),
+    # Object(pygame.FRect(200, 200, 50, 50), 10, (0, 240, 0), [0, 0], auto_scale=False),
     # Object(pygame.FRect(700, 200, 0, 0), 20, (240, 240, 240), [-5, 0], auto_scale=True),
+
     Object(pygame.FRect(-WALL_THICKNESS + OFFSET, 0, WALL_THICKNESS, SCREEN_SIZE[1]), -1, WALL_COLORS, [0, 0], unmovable=True),
     Object(pygame.FRect(SCREEN_SIZE[0] - OFFSET, 0, WALL_THICKNESS, 450), -1, WALL_COLORS, [0, 0], unmovable=True),
     Object(pygame.FRect(0, -WALL_THICKNESS + OFFSET, SCREEN_SIZE[0], WALL_THICKNESS), -1, WALL_COLORS, [0, 0], unmovable=True),
     Object(pygame.FRect(0, SCREEN_SIZE[1] - OFFSET, SCREEN_SIZE[0], WALL_THICKNESS), -1, WALL_COLORS, [0, 0], unmovable=True),
 ]
+
+# for i in range(10):
+#     mass = 10
+#     objects.append(
+#         Object(pygame.FRect(100 + i*50, 200 + i * 10, 40, 40), mass , (0,0,0), [0, 0], auto_scale=True)
+#     )
+#
+objects.append(Object(pygame.FRect(600, 200, 40, 40), 100, (0,0,0), [0, 0], auto_scale=True))
 
 pygame.mouse.set_visible(False)
 # pygame.mouse.set_cursor()
@@ -55,7 +69,8 @@ while running:
         mx_old, my_old = mx, my
     mx, my = pygame.mouse.get_pos()
     mouse_obj.rect.x, mouse_obj.rect.y = mx, my
-    mouse_obj.vel = [mx - mx_old, my - my_old]
+    mouse_obj.new_vel = [mx - mx_old, my - my_old]
+    # mouse_obj.vel = [mx-mx_old, my-my_old]
 
     energy = 0
     energy_mouse = 0

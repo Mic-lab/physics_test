@@ -62,8 +62,12 @@ class Object:
     @staticmethod
     def uncollide_rects(i, obj_1, obj_2):
         if i == 0:
-            x = (obj_2.rect.right - obj_1.rect.left) / (obj_2.vel[i] - obj_1.vel[i])
-            edge = obj_1.rect.right * (-obj_1.vel[i]) * x
+            # v1, v2 = -obj_1.vel[i], -obj_2.vel[i]
+            # x = (obj_2.rect.left - obj_1.rect.right) / (v2 - v1)
+            # print(f'{obj_1=} {obj_2=}')
+            # print(obj_2.rect.left - obj_1.rect.right, 'ahem')
+            # print(x, 'x')
+            # edge = obj_1.rect.right * v1 * x
 
             if obj_1.unmovable:
                 edge = obj_1.rect.right
@@ -74,7 +78,11 @@ class Object:
                 obj_1.rect.right = edge
             if not obj_2.unmovable:
                 obj_2.rect.left = edge
-            print(pygame.Rect.colliderect(obj_1.rect, obj_2.rect), '<-')
+            # print(pygame.FRect.colliderect(obj_1.rect, obj_2.rect), '<-')
+
+    @property
+    def energy(self):
+        return self.mass * self.vel[0] ** 2
 
     def uncollide(self, objects):
         play_sound = False
@@ -97,12 +105,14 @@ class Object:
                         if self.vel[i] > 0:
                             obj_1, obj_2 = self, obj
                         elif self.vel[i] < 0:
+                            print('left')
                             obj_1, obj_2 = obj, self
                         else:
                             if obj.vel[i] > 0:
                                 obj_1, obj_2 = obj, self
                             else:
                                 obj_1, obj_2 = self, obj
+                                print('left')
 
                     
                     elif self.vel[i] > 0 and obj.vel[i] > 0:
@@ -120,7 +130,7 @@ class Object:
                         else:
                             obj_1, obj_2 = obj, self
 
-                    print(f'{obj_1=} {obj_2=}')
+                    # print(f'{obj_1=} {obj_2=}')
 
                     self.uncollide_rects(i, obj_1, obj_2)
 
@@ -133,7 +143,20 @@ class Object:
 
         self.vel = self.new_vel.copy()
 
-    def blit(self, surf):
+    @staticmethod
+    def blit_text(surf, font, txt, pos=(0, 0), color=(255, 255, 255), y_spacing=4):
+        x, y = pos
+        for line in txt.split('\n'):
+            img = font.render(line, True, color)
+            surf.blit(img, (x, y) )
+            y += img.get_height() + y_spacing
+
+    def blit(self, surf, font):
+
+        # self.blit_text(surf, font, f'{round(self.vel[0], 4)}', pos=(self.rect[0], self.rect[1] - 8))
+        text = f'''E: {round(self.energy)}
+{(round(self.vel[0]), round(self.vel[1]))}'''
+        self.blit_text(surf, font, text, pos=(self.rect[0], self.rect[1] - 20))
         pygame.draw.rect(surf, self.color, self.rect)
 
     def __repr__(self):
